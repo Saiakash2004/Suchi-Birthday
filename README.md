@@ -428,3 +428,4 @@ Ending states (`ending-fade` → `black`) are driven by the heartbeat BPM decay 
 ## 📄 License
 
 Created with ❤️ for Suchi.
+# Suchi-Birthday
