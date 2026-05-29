@@ -203,9 +203,16 @@ export default function App() {
   };
 
   return (
-    <div className={`relative min-h-screen select-none ${['candles-extinguished','single-gold','second-gold','finale','ending-fade','black'].includes(sceneState) ? '' : 'watercolor-bg-fixed'} ${unlocked ? 'custom-cursor-enabled' : ''}`}
-      style={['candles-extinguished','single-gold','second-gold','finale','ending-fade','black'].includes(sceneState) ? { backgroundColor: '#070506', transition: 'background-color 2.5s ease-in-out' } : {}}
-    >
+    <div className={`relative min-h-screen select-none bg-[#070506] ${unlocked ? 'custom-cursor-enabled' : ''}`}>
+      
+      {/* Smooth Watercolor Background Layer (Fades out over 2.5s on dark states) */}
+      <div 
+        className={`fixed inset-0 pointer-events-none transition-opacity duration-[2500ms] ease-in-out z-0 ${
+          ['candles-extinguished', 'single-gold', 'second-gold', 'finale', 'ending-fade', 'black'].includes(sceneState)
+            ? 'opacity-0'
+            : 'opacity-100'
+        } watercolor-bg-fixed`}
+      />
       
       {/* 3D WebGL Canvas Layer */}
       <UniverseCanvas 
@@ -360,28 +367,28 @@ export default function App() {
                 setSceneState('candles-extinguished');
                 audioManager.fadeAudioOut(0.4);
                 
-                // Stage 2: 1.5s silent pause -> T = 1.5s: launch first single gold firework rocket
+                // Stage 2: 3.0s silent pause (allowing 2.5s fade out) -> T = 3.0s: launch first single gold firework rocket
                 setTimeout(() => {
                   console.log('[BLOW] → single-gold');
                   setSceneState('single-gold');
-                }, 1500);
+                }, 3000);
 
-                // T = 3.0s: launch second rocket
+                // T = 4.5s: launch second rocket
                 setTimeout(() => {
                   console.log('[BLOW] → second-gold');
                   setSceneState('second-gold');
-                }, 3000);
+                }, 4500);
 
-                // T = 4.0s: lanterns rise, full celebration state
+                // T = 5.5s: lanterns rise, full celebration state
                 setTimeout(() => {
                   console.log('[BLOW] → finale');
                   setSceneState('finale');
-                }, 4000);
+                }, 5500);
 
-                // T = 5.0s: music swells back in
+                // T = 6.5s: music swells back in
                 setTimeout(() => {
                   audioManager.restoreAudioVolumes(2.5);
-                }, 5000);
+                }, 6500);
               }}
             />
           </section>

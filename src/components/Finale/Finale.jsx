@@ -41,6 +41,7 @@ export const Finale = ({ isMuted, toggleMute, onRestart, candlesBlown, onBlowCan
   const [wishStage, setWishStage] = useState('celebration');
   
   const [isExtinguishing, setIsExtinguishing] = useState(false);
+  const [extinguishedCandles, setExtinguishedCandles] = useState([]);
   const [heartPulseScale, setHeartPulseScale] = useState(1);
   const heartTimerRef = useRef(null);
 
@@ -163,6 +164,7 @@ export const Finale = ({ isMuted, toggleMute, onRestart, candlesBlown, onBlowCan
       setSubmitStatus('idle');
       setWishStage('celebration');
       setIsExtinguishing(false);
+      setExtinguishedCandles([]);
     }
   }, [sceneState]);
 
@@ -315,10 +317,17 @@ export const Finale = ({ isMuted, toggleMute, onRestart, candlesBlown, onBlowCan
     setCeremonyStep('extinguished');
     audioManager.playBlowingCandles();
     
+    // Stagger the blowout of the 4 candles
+    [1, 2, 3, 4].forEach((num, index) => {
+      setTimeout(() => {
+        setExtinguishedCandles((prev) => [...prev, num]);
+      }, index * 180 + Math.random() * 50); // Stagger with slight random delay
+    });
+
     // Play blowing action and trigger timelines in App.jsx
     setTimeout(() => {
       onBlowCandles();
-    }, 700);
+    }, 1500);
   };
 
   return (
@@ -699,14 +708,14 @@ export const Finale = ({ isMuted, toggleMute, onRestart, candlesBlown, onBlowCan
       </AnimatePresence>
 
       <AnimatePresence mode="wait">
-        {sceneState === 'finale-candles' || sceneState === 'candles-extinguished' ? (
+        {sceneState === 'finale-candles' ? (
           /* 🎂 Birthday Cake Screen */
           <motion.div
             key="candles-screen"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, y: -20, filter: 'blur(12px)' }}
-            transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 2.5, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-center text-center max-w-2xl w-full z-10 relative"
           >
             {/* Cake card wrapper (fades out slightly on blow, blurred during ceremony steps) */}
@@ -735,44 +744,91 @@ export const Finale = ({ isMuted, toggleMute, onRestart, candlesBlown, onBlowCan
 
               {/* Candles */}
               <div className="flex gap-10 sm:gap-14 md:gap-18 mb-[-4px] z-10">
-                {[1, 2, 3, 4].map((num) => (
-                  <div key={num} className="flex flex-col items-center relative">
-                    <div 
-                      className="w-4 sm:w-5 md:w-6 h-16 sm:h-20 md:h-24 rounded-t-sm shadow-sm relative"
-                      style={{
-                        background: num % 2 === 0
-                          ? 'repeating-linear-gradient(45deg, #f472b6, #f472b6 6px, #fffdfb 6px, #fffdfb 12px)'
-                          : 'repeating-linear-gradient(-45deg, #f59e0b, #f59e0b 6px, #fffdfb 6px, #fffdfb 12px)',
-                        border: '1px solid rgba(244,114,182,0.2)'
-                      }}
-                    >
-                      {/* Flame */}
-                      {!isExtinguishing ? (
-                        <motion.div
-                          animate={{
-                            scale: [1, 1.15, 0.9, 1.1, 1],
-                            y: [0, -1, 1, -2, 0],
-                            rotate: [-2, 2, -1, 3, -1]
-                          }}
-                          transition={{
-                            repeat: Infinity,
-                            duration: 0.4 + Math.random() * 0.3,
-                            ease: "easeInOut"
-                          }}
-                          className="w-5 sm:w-6 md:w-8 h-8 sm:h-10 md:h-12 bg-gradient-to-t from-orange-400 via-yellow-300 to-white rounded-full blur-[0.5px] shadow-[0_0_24px_rgba(251,191,36,0.95)] origin-bottom absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5"
-                        />
-                      ) : (
-                        /* Splitting smoke trail */
-                        <motion.div
-                          initial={{ scale: 0.2, opacity: 0.8, y: 0 }}
-                          animate={{ scale: 2.2, opacity: 0, y: -45 }}
-                          transition={{ duration: 0.6 }}
-                          className="absolute bottom-full left-1/2 -translate-x-1/2 w-6 h-6 bg-slate-400/40 rounded-full blur-xs"
-                        />
-                      )}
+                {[1, 2, 3, 4].map((num) => {
+                  const isThisCandleBlown = extinguishedCandles.includes(num);
+                  return (
+                    <div key={num} className="flex flex-col items-center relative">
+                      <div 
+                        className="w-4 sm:w-5 md:w-6 h-16 sm:h-20 md:h-24 rounded-t-sm shadow-sm relative"
+                        style={{
+                          background: num % 2 === 0
+                            ? 'repeating-linear-gradient(45deg, #f472b6, #f472b6 6px, #fffdfb 6px, #fffdfb 12px)'
+                            : 'repeating-linear-gradient(-45deg, #f59e0b, #f59e0b 6px, #fffdfb 6px, #fffdfb 12px)',
+                          border: '1px solid rgba(244,114,182,0.2)'
+                        }}
+                      >
+                        {/* Flame or blowout effects */}
+                        {!isThisCandleBlown ? (
+                          <motion.div
+                            animate={isExtinguishing 
+                              ? {
+                                  scale: [1, 0.75, 0.4, 0],
+                                  x: [0, 8, 15, 20],
+                                  y: [0, 2, 5, 8],
+                                  skewX: -25,
+                                  rotate: -20,
+                                }
+                              : {
+                                  scale: [1, 1.15, 0.9, 1.1, 1],
+                                  y: [0, -1, 1, -2, 0],
+                                  rotate: [-2, 2, -1, 3, -1]
+                                }
+                            }
+                            transition={isExtinguishing 
+                              ? { duration: 0.25, ease: "easeOut" }
+                              : {
+                                  repeat: Infinity,
+                                  duration: 0.4 + Math.random() * 0.3,
+                                  ease: "easeInOut"
+                                }
+                            }
+                            className="w-5 sm:w-6 md:w-8 h-8 sm:h-10 md:h-12 bg-gradient-to-t from-orange-400 via-yellow-300 to-white rounded-full blur-[0.5px] shadow-[0_0_24px_rgba(251,191,36,0.95)] origin-bottom absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5"
+                          />
+                        ) : (
+                          <>
+                            {/* Realistic smoke trail puffs */}
+                            {Array.from({ length: 3 }).map((_, i) => (
+                              <motion.div
+                                key={`smoke-${num}-${i}`}
+                                initial={{ opacity: 0.65, scale: 0.2, x: 0, y: -5 }}
+                                animate={{ 
+                                  opacity: 0, 
+                                  scale: [0.2, 1.5 + i * 0.5], 
+                                  x: [0, 10 + i * 15], 
+                                  y: [-5, -60 - i * 20] 
+                                }}
+                                transition={{ duration: 0.8 + i * 0.2, ease: "easeOut" }}
+                                className="absolute bottom-full left-1/2 -translate-x-1/2 w-4 h-4 bg-slate-400/40 rounded-full blur-xs pointer-events-none"
+                              />
+                            ))}
+
+                            {/* Glowing golden ember sparks */}
+                            {Array.from({ length: 8 }).map((_, i) => {
+                              const angle = (i / 8) * Math.PI * 2;
+                              const velocity = 25 + Math.random() * 35;
+                              const targetX = Math.cos(angle) * velocity + 15; // slightly pushed right in blowing direction
+                              const targetY = -40 - Math.random() * 50;
+                              return (
+                                <motion.div
+                                  key={`spark-${num}-${i}`}
+                                  initial={{ opacity: 1, scale: 1.5, x: 0, y: -5 }}
+                                  animate={{ 
+                                    opacity: 0, 
+                                    scale: 0,
+                                    x: targetX, 
+                                    y: targetY 
+                                  }}
+                                  transition={{ duration: 0.5 + Math.random() * 0.4, ease: "easeOut" }}
+                                  className="absolute bottom-full left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-gradient-to-r from-amber-400 to-yellow-200 rounded-full shadow-[0_0_8px_#f59e0b] pointer-events-none"
+                                />
+                              );
+                            })}
+                          </>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* Cake layers */}
