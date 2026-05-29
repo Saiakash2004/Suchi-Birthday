@@ -247,6 +247,8 @@ export const Finale = ({ isMuted, toggleMute, onRestart, candlesBlown, onBlowCan
 
   // Stage 4: submit wish silently and progress the step chain
   const handleSealWish = () => {
+    if (!wishInput.trim()) return;
+
     setSubmitStatus('sending');
     audioManager.playClick();
 
@@ -292,22 +294,18 @@ export const Finale = ({ isMuted, toggleMute, onRestart, candlesBlown, onBlowCan
       }, 1500); // Show "Wish Sealed ✨" status for 1.5s
     };
 
-    if (wishInput.trim()) {
-      fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          access_key: loveConfig.web3formsKey,
-          subject: '🌟 Suchi made a birthday wish!',
-          from_name: 'Suchi\'s Birthday Universe',
-          message: `✨ Wish: "${wishInput}"`,
-        }),
-      })
-      .then(proceedToFolding)
-      .catch(proceedToFolding);
-    } else {
-      proceedToFolding();
-    }
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        access_key: loveConfig.web3formsKey,
+        subject: '🌟 Suchi made a birthday wish!',
+        from_name: 'Suchi\'s Birthday Universe',
+        message: `✨ Wish: "${wishInput}"`,
+      }),
+    })
+    .then(proceedToFolding)
+    .catch(proceedToFolding);
   };
 
   const handleBlow = () => {
@@ -638,15 +636,17 @@ export const Finale = ({ isMuted, toggleMute, onRestart, candlesBlown, onBlowCan
                 </div>
 
                 <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  onClick={submitStatus === 'idle' ? handleSealWish : undefined}
-                  disabled={submitStatus !== 'idle'}
-                  className={`w-full py-4 rounded-full text-white text-xs tracking-[0.15em] font-bold uppercase transition-all shadow-md cursor-pointer z-10 ${
+                  whileTap={wishInput.trim() ? { scale: 0.95 } : {}}
+                  onClick={submitStatus === 'idle' && wishInput.trim() ? handleSealWish : undefined}
+                  disabled={submitStatus !== 'idle' || !wishInput.trim()}
+                  className={`w-full py-4 rounded-full text-white text-xs tracking-[0.15em] font-bold uppercase transition-all shadow-md z-10 ${
                     submitStatus === 'sending'
                       ? 'bg-amber-400/80 cursor-wait'
                       : submitStatus === 'success'
                       ? 'bg-emerald-500 shadow-[0_4px_15px_rgba(16,185,129,0.25)]'
-                      : 'bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700'
+                      : !wishInput.trim()
+                      ? 'bg-amber-200/50 text-amber-800/40 cursor-not-allowed shadow-none'
+                      : 'bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 cursor-pointer'
                   }`}
                 >
                   {submitStatus === 'sending'
