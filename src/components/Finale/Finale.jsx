@@ -354,7 +354,10 @@ export const Finale = ({ isMuted, toggleMute, onRestart, candlesBlown, onBlowCan
             transition={{ duration: 2.0, ease: 'easeOut' }}
             className="absolute top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none flex flex-col items-center"
           >
-            <span className="font-cursive text-3xl md:text-4xl text-rose-350 font-semibold drop-shadow-[0_0_12px_rgba(244,63,94,0.6)]">
+            <span 
+              className="text-3xl md:text-4xl text-rose-350 font-semibold drop-shadow-[0_0_12px_rgba(244,63,94,0.6)]"
+              style={{ fontFamily: "'Times New Roman', Times, serif" }}
+            >
               "{wishInput}"
             </span>
             <span className="text-[10px] text-pink-200 font-semibold uppercase tracking-[0.25em] mt-2.5 animate-pulse">
@@ -430,7 +433,6 @@ export const Finale = ({ isMuted, toggleMute, onRestart, candlesBlown, onBlowCan
                 <div className="absolute inset-0 border border-amber-200/10 rounded-b-xl pointer-events-none" />
               )}
 
-              {/* Wish Letter Sheet content inside */}
               <motion.span
                 animate={{
                   opacity: ['transforming', 'flying'].includes(ceremonyStep) ? 0.14 : 0.45,
@@ -438,7 +440,8 @@ export const Finale = ({ isMuted, toggleMute, onRestart, candlesBlown, onBlowCan
                   y: ['transforming', 'flying'].includes(ceremonyStep) ? -20 : 0
                 }}
                 transition={{ duration: 2.0 }}
-                className="font-cursive text-[#4a3135] text-sm text-center italic mt-4 max-w-[150px] break-words select-none pointer-events-none"
+                className="text-[#4a3135] text-sm text-center italic mt-4 max-w-[150px] break-words select-none pointer-events-none"
+                style={{ fontFamily: "'Times New Roman', Times, serif" }}
               >
                 "{(wishInput.trim() ? wishInput.slice(0, 35) + (wishInput.length > 35 ? '...' : '') : 'A silent wish')}"
               </motion.span>
@@ -631,7 +634,8 @@ export const Finale = ({ isMuted, toggleMute, onRestart, candlesBlown, onBlowCan
                     placeholder="Write your wish here..."
                     maxLength={100}
                     disabled={submitStatus !== 'idle'}
-                    className="w-full px-5 py-4 text-base bg-[#fffaf0]/60 border border-amber-200/40 rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-500/30 text-[#4a3135] font-cursive italic shadow-inner placeholder-[#5c4044]/45 resize-none leading-relaxed"
+                    className="w-full px-5 py-4 text-base bg-[#fffaf0]/60 border border-amber-200/40 rounded-2xl focus:outline-none focus:ring-2 focus:ring-amber-500/30 text-[#4a3135] italic shadow-inner placeholder-[#5c4044]/45 resize-none leading-relaxed"
+                    style={{ fontFamily: "'Times New Roman', Times, serif" }}
                   />
                 </div>
 
