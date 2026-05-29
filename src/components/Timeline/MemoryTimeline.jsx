@@ -86,8 +86,7 @@ const HangingPolaroid = ({ memory, index, onClick, onHoverChange, isHovered, wir
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      onClick={() => onClick(memory.id)}
-      className="bg-[#faf8f4] p-3 pb-7 border border-[#e8e2d7] rounded-[3px] cursor-pointer select-none relative transition-all duration-300 w-52 md:w-60"
+      className="bg-[#faf8f4] p-3 pb-7 border border-[#e8e2d7] rounded-[3px] cursor-default select-none relative transition-all duration-300 w-52 md:w-60"
     >
       {/* 📎 Realistic Wooden Clothes Pin/Clip */}
       <div 
@@ -374,7 +373,7 @@ export const MemoryTimeline = () => {
         viewport={{ once: true }}
         className="text-[9px] text-[#4a3135]/45 tracking-[0.2em] uppercase mt-8 z-10 font-semibold"
       >
-        hover to feel the depth · click to open memory 🌸
+        hover to feel the depth 🌸
       </motion.p>
 
       {/* Cinematic Focus Mode Overlay */}
