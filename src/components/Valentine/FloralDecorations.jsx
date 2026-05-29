@@ -120,7 +120,7 @@ export const FlowerCornerDecoration = ({ position = 'top-right', opacity = 0.35,
       style={{ opacity }}
     >
       <img 
-        src="/images/flower_corner.png" 
+        src={`${import.meta.env.BASE_URL}images/flower_corner.png`} 
         alt="" 
         style={{ width: size, height: size }}
         className="object-contain"
@@ -142,7 +142,7 @@ export const BouquetDecoration = ({ className = '', size = 250 }) => {
       className={`bouquet-glow float-flower ${className}`}
     >
       <img 
-        src="/images/rose_bouquet.png" 
+        src={`${import.meta.env.BASE_URL}images/rose_bouquet.png`} 
         alt="Rose Bouquet" 
         style={{ width: size, height: size }}
         className="object-contain drop-shadow-[0_0_20px_rgba(236,72,153,0.2)]"
@@ -158,7 +158,7 @@ export const FloralWreath = ({ children, size = 350 }) => {
   return (
     <div className="relative flex items-center justify-center">
       <motion.img
-        src="/images/floral_wreath.png"
+        src={`${import.meta.env.BASE_URL}images/floral_wreath.png`}
         alt=""
         initial={{ opacity: 0, scale: 0.7, rotate: -10 }}
         animate={{ opacity: 0.6, scale: 1, rotate: 0 }}
@@ -186,7 +186,7 @@ export const SingleRoseAccent = ({ className = '', size = 120 }) => {
       className={`pointer-events-none ${className}`}
     >
       <img 
-        src="/images/single_rose.png" 
+        src={`${import.meta.env.BASE_URL}images/single_rose.png`} 
         alt="" 
         style={{ width: size, height: size }}
         className="object-contain mix-blend-screen drop-shadow-[0_0_15px_rgba(220,38,38,0.2)]"

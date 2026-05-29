@@ -102,7 +102,7 @@ const HangingPolaroid = ({ memory, index, onClick, onHoverChange, isHovered, wir
       {/* Picture Frame area (damaged corners aspect ratio) */}
       <div className="relative aspect-square w-full overflow-hidden bg-slate-200 rounded-[2px] border border-[#e4ded0] shadow-inner mb-3">
         <img
-          src={`/images/${memory.image}`}
+          src={`${import.meta.env.BASE_URL}images/${memory.image}`}
           alt={memory.title}
           className={`w-full h-full object-cover transition-all duration-1000 ease-out grayscale-[10%] ${
             isHovered ? 'scale-105 grayscale-0' : ''
@@ -404,7 +404,7 @@ export const MemoryTimeline = () => {
               {/* Polaroid Image pane */}
               <div className="w-full md:w-[48%] aspect-square md:h-auto relative overflow-hidden bg-slate-200 border border-[#e4ded0] shadow-inner rounded-[2px]">
                 <img
-                  src={`/images/${activeMemory.image}`}
+                  src={`${import.meta.env.BASE_URL}images/${activeMemory.image}`}
                   alt={activeMemory.title}
                   className="w-full h-full object-cover"
                 />
